@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { shallow } from 'enzyme';
 
-import { DatagridCell } from './DatagridCell';
+import DatagridCell from './DatagridCell';
 
 describe('<DatagridCell />', () => {
     const Field = () => <div />;
@@ -18,7 +18,7 @@ describe('<DatagridCell />', () => {
 
     it('should render as a mui <TableRowColumn /> component', () => {
         const wrapper = shallow(<DatagridCell field={<Field />} />);
-        const col = wrapper.find('WithStyles(TableCell)');
+        const col = wrapper.find('WithStyles(ForwardRef(TableCell))');
         assert.equal(col.length, 1);
     });
 

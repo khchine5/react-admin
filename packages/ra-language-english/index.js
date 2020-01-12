@@ -28,6 +28,7 @@ module.exports = {
         boolean: {
             true: 'Yes',
             false: 'No',
+            null: '',
         },
         page: {
             create: 'Create %{name}',
@@ -57,6 +58,10 @@ module.exports = {
                     'At least one of the associated references no longer appears to be available.',
                 single_missing:
                     'Associated reference no longer appears to be available.',
+            },
+            password: {
+                toggle_visible: 'Hide password',
+                toggle_hidden: 'Show password',
             },
         },
         message: {
@@ -91,6 +96,7 @@ module.exports = {
             prev: 'Prev',
         },
         auth: {
+            auth_check_error: 'Please login to continue',
             user_menu: 'Profile',
             username: 'Username',
             password: 'Password',
@@ -107,6 +113,8 @@ module.exports = {
             http_error: 'Server communication error',
             data_provider_error:
                 'dataProvider error. Check the console for details.',
+            i18n_error:
+                'Cannot load the translations for the specified language',
             canceled: 'Action cancelled',
             logged_out: 'Your session has ended, please reconnect.',
         },
