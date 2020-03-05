@@ -1,10 +1,13 @@
+import { Theme, StyleRules } from '@material-ui/core/styles';
+
 import QuillSnowStylesheet from './QuillSnowStylesheet';
 
-export default theme => ({
+export default (theme: Theme): StyleRules<string, any> => ({
     label: {
         position: 'relative',
     },
-    '@global': Object.assign({}, QuillSnowStylesheet, {
+    '@global': {
+        ...QuillSnowStylesheet,
         '.ra-rich-text-input': {
             '& .ql-editor': {
                 fontSize: '1rem',
@@ -79,10 +82,10 @@ export default theme => ({
                 },
             },
             '& .standard .ql-editor': {
-                backgroundColor: theme.palette.text.primary,
+                backgroundColor: theme.palette.background.paper,
             },
             '& .outlined .ql-editor': {
-                backgroundColor: theme.palette.text.primary,
+                backgroundColor: theme.palette.background.paper,
             },
             '& .ql-toolbar.ql-snow': {
                 margin: '0.5rem 0',
@@ -90,13 +93,13 @@ export default theme => ({
                 padding: 0,
 
                 '& .ql-picker-item': {
-                    color: theme.palette.text.secondary,
+                    color: theme.palette.text.primary,
                 },
                 '& .ql-stroke': {
-                    stroke: theme.palette.text.secondary,
+                    stroke: theme.palette.text.primary,
                 },
                 '& .ql-fill': {
-                    fill: theme.palette.text.secondary,
+                    fill: theme.palette.text.primary,
                 },
                 '& .ql-picker-item.ql-active': {
                     color: theme.palette.primary.main,
@@ -146,7 +149,7 @@ export default theme => ({
 
                 '& .ql-picker-label': {
                     paddingLeft: 0,
-                    color: theme.palette.text.secondary,
+                    color: theme.palette.text.primary,
                 },
 
                 '& + .ql-container.ql-snow': {
@@ -154,5 +157,5 @@ export default theme => ({
                 },
             },
         },
-    }),
+    },
 });
