@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import Inbox from '@material-ui/icons/Inbox';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
@@ -29,17 +29,21 @@ const useStyles = makeStyles(
     { name: 'RaEmpty' }
 );
 
-const Empty = ({ resource, basePath }) => {
-    const classes = useStyles();
+const Empty = props => {
+    const { resource, basePath } = props;
+    const classes = useStyles(props);
     const translate = useTranslate();
 
-    const resourceName = inflection.humanize(
-        translate(`resources.${resource}.name`, {
-            smart_count: 0,
-            _: inflection.pluralize(resource),
-        }),
-        true
-    );
+    const resourceName = translate(`resources.${resource}.forcedCaseName`, {
+        smart_count: 0,
+        _: inflection.humanize(
+            translate(`resources.${resource}.name`, {
+                smart_count: 0,
+                _: inflection.pluralize(resource),
+            }),
+            true
+        ),
+    });
 
     const emptyMessage = translate('ra.page.empty', { name: resourceName });
     const inviteMessage = translate('ra.page.invite');

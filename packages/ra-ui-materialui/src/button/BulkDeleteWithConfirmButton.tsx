@@ -1,4 +1,5 @@
-import React, { FC, Fragment, useState, ReactElement } from 'react';
+import * as React from 'react';
+import { FC, Fragment, useState, ReactElement } from 'react';
 import PropTypes from 'prop-types';
 import ActionDelete from '@material-ui/icons/Delete';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -33,20 +34,23 @@ const useStyles = makeStyles(
     { name: 'RaBulkDeleteWithConfirmButton' }
 );
 
-const BulkDeleteWithConfirmButton: FC<BulkDeleteWithConfirmButtonProps> = ({
-    basePath,
-    classes: classesOverride,
-    confirmTitle,
-    confirmContent,
-    icon,
-    label,
-    onClick,
-    resource,
-    selectedIds,
-    ...rest
-}) => {
+const BulkDeleteWithConfirmButton: FC<
+    BulkDeleteWithConfirmButtonProps
+> = props => {
+    const {
+        basePath,
+        classes: classesOverride,
+        confirmTitle,
+        confirmContent,
+        icon,
+        label,
+        onClick,
+        resource,
+        selectedIds,
+        ...rest
+    } = props;
     const [isOpen, setOpen] = useState(false);
-    const classes = useStyles({ classes: classesOverride });
+    const classes = useStyles(props);
     const notify = useNotify();
     const unselectAll = useUnselectAll();
     const refresh = useRefresh();
@@ -105,13 +109,19 @@ const BulkDeleteWithConfirmButton: FC<BulkDeleteWithConfirmButtonProps> = ({
                 content={confirmContent}
                 translateOptions={{
                     smart_count: selectedIds.length,
-                    name: inflection.humanize(
-                        translate(`resources.${resource}.name`, {
-                            smart_count: selectedIds.length,
-                            _: inflection.inflect(resource, selectedIds.length),
-                        }),
-                        true
-                    ),
+                    name: translate(`resources.${resource}.forcedCaseName`, {
+                        smart_count: selectedIds.length,
+                        _: inflection.humanize(
+                            translate(`resources.${resource}.name`, {
+                                smart_count: selectedIds.length,
+                                _: inflection.inflect(
+                                    resource,
+                                    selectedIds.length
+                                ),
+                            }),
+                            true
+                        ),
+                    }),
                 }}
                 onConfirm={handleDelete}
                 onClose={handleDialogClose}

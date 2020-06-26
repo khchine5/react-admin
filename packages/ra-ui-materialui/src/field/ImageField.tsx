@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from 'react';
+import * as React from 'react';
+import { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { makeStyles } from '@material-ui/core/styles';
@@ -28,18 +29,19 @@ interface Props extends FieldProps {
     classes?: object;
 }
 
-const ImageField: FunctionComponent<Props & InjectedFieldProps> = ({
-    className,
-    classes: classesOverride,
-    emptyText,
-    record,
-    source,
-    src,
-    title,
-    ...rest
-}) => {
+const ImageField: FunctionComponent<Props & InjectedFieldProps> = props => {
+    const {
+        className,
+        classes: classesOverride,
+        emptyText,
+        record,
+        source,
+        src,
+        title,
+        ...rest
+    } = props;
     const sourceValue = get(record, source);
-    const classes = useStyles({ classes: classesOverride });
+    const classes = useStyles(props);
     if (!sourceValue) {
         return emptyText ? (
             <Typography

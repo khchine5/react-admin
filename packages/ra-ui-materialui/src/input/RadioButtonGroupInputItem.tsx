@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { useField } from 'react-final-form';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
@@ -26,7 +26,7 @@ const RadioButtonGroupInputItem = ({
         value,
     });
 
-    const nodeId = `${source}_${label}`;
+    const nodeId = `${source}_${value}`;
 
     return (
         <FormControlLabel

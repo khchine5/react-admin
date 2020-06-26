@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, wait, getByText } from '@testing-library/react';
-import React from 'react';
+import * as React from 'react';
 import { renderWithRedux } from 'ra-core';
 
 import SimpleFormIterator from './SimpleFormIterator';
@@ -8,6 +8,14 @@ import { ArrayInput } from '../input';
 import SimpleForm from './SimpleForm';
 
 describe('<SimpleFormIterator />', () => {
+    // bypass confirm leave form with unsaved changes
+    let confirmSpy;
+    beforeAll(() => {
+        confirmSpy = jest.spyOn(window, 'confirm');
+        confirmSpy.mockImplementation(jest.fn(() => true));
+    });
+    afterAll(() => confirmSpy.mockRestore());
+
     afterEach(cleanup);
 
     it('should display an add item button at least', () => {

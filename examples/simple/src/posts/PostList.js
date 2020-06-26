@@ -1,4 +1,5 @@
-import React, { Children, Fragment, cloneElement, memo } from 'react';
+import * as React from 'react';
+import { Children, Fragment, cloneElement, memo } from 'react';
 import BookIcon from '@material-ui/icons/Book';
 import Chip from '@material-ui/core/Chip';
 import { useMediaQuery, makeStyles } from '@material-ui/core';
@@ -143,6 +144,7 @@ const PostList = props => {
                     <TextField source="title" cellClassName={classes.title} />
                     <DateField
                         source="published_at"
+                        sortByOrder="DESC"
                         cellClassName={classes.publishedAt}
                     />
 
@@ -151,7 +153,7 @@ const PostList = props => {
                         label="resources.posts.fields.commentable_short"
                         sortable={false}
                     />
-                    <NumberField source="views" />
+                    <NumberField source="views" sortByOrder="DESC" />
                     <ReferenceArrayField
                         label="Tags"
                         reference="tags"

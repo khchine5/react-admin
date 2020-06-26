@@ -1,6 +1,6 @@
-import React from 'react';
-import assert from 'assert';
-import { render, cleanup } from '@testing-library/react';
+import * as React from 'react';
+import expect from 'expect';
+import { render, cleanup, getNodeText } from '@testing-library/react';
 import TextField from './TextField';
 
 describe('<TextField />', () => {
@@ -13,11 +13,36 @@ describe('<TextField />', () => {
         const { queryByText } = render(
             <TextField record={record} source="title" />
         );
-        assert.notEqual(
-            queryByText("I'm sorry, Dave. I'm afraid I can't do that."),
-            null
-        );
+        expect(
+            queryByText("I'm sorry, Dave. I'm afraid I can't do that.")
+        ).not.toBeNull();
     });
+
+    it.each([null, undefined])(
+        'should display emptyText prop if provided for %s value',
+        value => {
+            const record = { title: value };
+            const { queryByText } = render(
+                <TextField
+                    emptyText="Sorry, there's nothing here"
+                    record={record}
+                    source="title"
+                />
+            );
+            expect("Sorry, there's nothing here").not.toBeNull();
+        }
+    );
+
+    it.each([null, undefined])(
+        'should display nothing for %s value without emptyText prop',
+        value => {
+            const record = { title: value };
+            const { container } = render(
+                <TextField record={record} source="title" />
+            );
+            expect(getNodeText(container)).toStrictEqual('');
+        }
+    );
 
     it('should handle deep fields', () => {
         const record = {
@@ -26,10 +51,9 @@ describe('<TextField />', () => {
         const { queryByText } = render(
             <TextField record={record} source="foo.title" />
         );
-        assert.notEqual(
-            queryByText("I'm sorry, Dave. I'm afraid I can't do that."),
-            null
-        );
+        expect(
+            queryByText("I'm sorry, Dave. I'm afraid I can't do that.")
+        ).not.toBeNull();
     });
 
     it('should render the emptyText when value is null', () => {
@@ -37,6 +61,6 @@ describe('<TextField />', () => {
         const { queryByText } = render(
             <TextField record={record} source="title" emptyText="NA" />
         );
-        assert.notEqual(queryByText('NA'), null);
+        expect(queryByText('NA')).not.toBeNull();
     });
 });

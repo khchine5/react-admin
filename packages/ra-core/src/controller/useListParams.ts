@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { parse, stringify } from 'query-string';
 import lodashDebounce from 'lodash/debounce';
@@ -40,7 +40,7 @@ interface Modifiers {
     changeParams: (action: any) => void;
     setPage: (page: number) => void;
     setPerPage: (pageSize: number) => void;
-    setSort: (sort: string) => void;
+    setSort: (sort: string, order?: string) => void;
     setFilters: (filters: any, displayedFilters: any) => void;
     hideFilter: (filterName: string) => void;
     showFilter: (filterName: string, defaultValue: any) => void;
@@ -131,10 +131,12 @@ const useListParams = ({
         perPage,
     ];
 
+    const queryFromLocation = parseQueryFromLocation(location);
+
     const query = useMemo(
         () =>
             getQuery({
-                location,
+                queryFromLocation,
                 params,
                 filterDefaultValues,
                 sort,
@@ -142,6 +144,16 @@ const useListParams = ({
             }),
         requestSignature // eslint-disable-line react-hooks/exhaustive-deps
     );
+
+    // On mount, if the location includes params (for example from a link like
+    // the categories products on the demo), we need to persist them in the
+    // redux state as well so that we don't loose them after a redirection back
+    // to the list
+    useEffect(() => {
+        if (Object.keys(queryFromLocation).length > 0) {
+            dispatch(changeListParams(resource, query));
+        }
+    }, []); // eslint-disable-line
 
     const changeParams = useCallback(action => {
         const newParams = queryReducer(query, action);
@@ -156,8 +168,11 @@ const useListParams = ({
     }, requestSignature); // eslint-disable-line react-hooks/exhaustive-deps
 
     const setSort = useCallback(
-        (newSort: string) =>
-            changeParams({ type: SET_SORT, payload: { sort: newSort } }),
+        (sort: string, order?: string) =>
+            changeParams({
+                type: SET_SORT,
+                payload: { sort, order },
+            }),
         requestSignature // eslint-disable-line react-hooks/exhaustive-deps
     );
 
@@ -206,18 +221,21 @@ const useListParams = ({
 
     const hideFilter = useCallback((filterName: string) => {
         const newFilters = removeKey(filterValues, filterName);
-        const newDisplayedFilters = removeKey(
-            displayedFilterValues,
-            filterName
-        );
+        const newDisplayedFilters = {
+            ...displayedFilterValues,
+            [filterName]: undefined,
+        };
+
         setFilters(newFilters, newDisplayedFilters);
     }, requestSignature); // eslint-disable-line react-hooks/exhaustive-deps
 
     const showFilter = useCallback((filterName: string, defaultValue: any) => {
-        setFilters(
-            set(filterValues, filterName, defaultValue),
-            set(displayedFilterValues, filterName, true)
-        );
+        const newFilters = set(filterValues, filterName, defaultValue);
+        const newDisplayedFilters = {
+            ...displayedFilterValues,
+            [filterName]: true,
+        };
+        setFilters(newFilters, newDisplayedFilters);
     }, requestSignature); // eslint-disable-line react-hooks/exhaustive-deps
 
     return [
@@ -258,7 +276,7 @@ const parseObject = (query, field) => {
     }
 };
 
-export const parseQueryFromLocation = ({ search }) => {
+export const parseQueryFromLocation = ({ search }): Partial<ListParams> => {
     const query = pickBy(
         parse(search),
         (v, k) => validQueryParams.indexOf(k) !== -1
@@ -279,7 +297,7 @@ export const parseQueryFromLocation = ({ search }) => {
  * To check if the user has custom params, we must compare the params
  * to these initial values.
  *
- * @param {object} params
+ * @param {Object} params
  */
 export const hasCustomParams = (params: ListParams) => {
     return (
@@ -300,13 +318,12 @@ export const hasCustomParams = (params: ListParams) => {
  *   - the props passed to the List component (including the filter defaultValues)
  */
 export const getQuery = ({
-    location,
+    queryFromLocation,
     params,
     filterDefaultValues,
     sort,
     perPage,
 }) => {
-    const queryFromLocation = parseQueryFromLocation(location);
     const query: Partial<ListParams> =
         Object.keys(queryFromLocation).length > 0
             ? queryFromLocation

@@ -1,4 +1,5 @@
-import React, { Children, cloneElement, isValidElement, useRef } from 'react';
+import * as React from 'react';
+import { Children, cloneElement, isValidElement, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import get from 'lodash/get';
@@ -62,24 +63,24 @@ const useStyles = makeStyles(
     { name: 'RaSimpleFormIterator' }
 );
 
-const SimpleFormIterator = ({
-    basePath,
-    classes: classesOverride,
-    children,
-    fields,
-    meta: { error, submitFailed },
-    record,
-    resource,
-    source,
-    disableAdd,
-    disableRemove,
-    variant,
-    margin,
-    TransitionProps,
-    defaultValue,
-}) => {
+const SimpleFormIterator = props => {
+    const {
+        basePath,
+        children,
+        fields,
+        meta: { error, submitFailed },
+        record,
+        resource,
+        source,
+        disableAdd,
+        disableRemove,
+        variant,
+        margin,
+        TransitionProps,
+        defaultValue,
+    } = props;
     const translate = useTranslate();
-    const classes = useStyles({ classes: classesOverride });
+    const classes = useStyles(props);
 
     // We need a unique id for each field for a proper enter/exit animation
     // so we keep an internal map between the field position and an auto-increment id
@@ -95,7 +96,9 @@ const SimpleFormIterator = ({
     // the fields prop which will always be empty for a new record.
     // Without it, our ids wouldn't match the default value and we would get key warnings
     // on the CssTransition element inside our render method
-    const ids = useRef(nextId > 0 ? Array.from(Array(nextId).keys()) : []);
+    const ids = useRef(
+        nextId.current > 0 ? Array.from(Array(nextId.current).keys()) : []
+    );
 
     const removeField = index => () => {
         ids.current.splice(index, 1);

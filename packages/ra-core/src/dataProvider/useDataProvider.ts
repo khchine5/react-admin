@@ -45,7 +45,8 @@ const optimisticCalls = [];
  *
  * @example Basic usage
  *
- * import React, { useState } from 'react';
+ * import * as React from 'react';
+import { useState } from 'react';
  * import { useDataProvider } from 'react-admin';
  *
  * const PostList = () => {
@@ -127,6 +128,9 @@ const useDataProvider = (): DataProviderProxy => {
     const dataProviderProxy = useMemo(() => {
         return new Proxy(dataProvider, {
             get: (target, name) => {
+                if (typeof name === 'symbol') {
+                    return;
+                }
                 return (
                     resource: string,
                     payload: any,

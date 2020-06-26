@@ -67,7 +67,7 @@ export interface ListControllerProps<RecordType = Record> {
     setFilters: (filters: any, displayedFilters: any) => void;
     setPage: (page: number) => void;
     setPerPage: (page: number) => void;
-    setSort: (sort: string) => void;
+    setSort: (sort: string, order?: string) => void;
     showFilter: (filterName: string, defaultValue: any) => void;
     total: number;
     version: number;
@@ -142,7 +142,6 @@ const useListController = <RecordType = Record>(
         { ...query.filter, ...filter },
         {
             action: CRUD_GET_LIST,
-            version,
             onFailure: error =>
                 notify(
                     typeof error === 'string'
@@ -155,7 +154,11 @@ const useListController = <RecordType = Record>(
 
     const data = useSelector(
         (state: ReduxState): RecordMap<RecordType> =>
-            get(state.admin.resources, [resource, 'data'], defaultData)
+            get(
+                state.admin.resources,
+                [resource, 'data'],
+                defaultData
+            ) as RecordMap<RecordType>
     );
 
     // When the user changes the page/sort/filter, this controller runs the
@@ -171,15 +174,17 @@ const useListController = <RecordType = Record>(
             get(state.admin.resources, [resource, 'list', 'total'], 0)
     );
 
+    const finalIds = typeof total === 'undefined' ? defaultIds : ids;
+
     useEffect(() => {
         if (
             query.page <= 0 ||
-            (!loading && query.page > 1 && (ids || []).length === 0)
+            (!loading && query.page > 1 && (finalIds || []).length === 0)
         ) {
             // query for a page that doesn't exist, set page to 1
             queryModifiers.setPage(1);
         }
-    }, [loading, query.page, ids, queryModifiers]);
+    }, [loading, query.page, finalIds, queryModifiers, total, defaultIds]);
 
     const currentSort = useMemo(
         () => ({
@@ -206,7 +211,7 @@ const useListController = <RecordType = Record>(
         filterValues: query.filterValues,
         hasCreate,
         hideFilter: queryModifiers.hideFilter,
-        ids: typeof total === 'undefined' ? defaultIds : ids,
+        ids: finalIds,
         loaded: loaded || defaultIds.length > 0,
         loading,
         onSelect: selectionModifiers.select,

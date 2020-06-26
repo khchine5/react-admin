@@ -1,4 +1,5 @@
-import React, { FC, useCallback, MouseEventHandler } from 'react';
+import * as React from 'react';
+import { FC, useCallback, MouseEventHandler } from 'react';
 import PropTypes, { ReactComponentLike } from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -55,22 +56,22 @@ const useStyles = makeStyles(
  *     onClose={() => { // do something }}
  * />
  */
-const Confirm: FC<ConfirmProps> = ({
-    isOpen,
-    loading,
-    title,
-    content,
-    confirm,
-    cancel,
-    confirmColor,
-    ConfirmIcon,
-    CancelIcon,
-    onClose,
-    onConfirm,
-    classes: classesOverride,
-    translateOptions = {},
-}) => {
-    const classes = useStyles({ classes: classesOverride });
+const Confirm: FC<ConfirmProps> = props => {
+    const {
+        isOpen,
+        loading,
+        title,
+        content,
+        confirm,
+        cancel,
+        confirmColor,
+        ConfirmIcon,
+        CancelIcon,
+        onClose,
+        onConfirm,
+        translateOptions = {},
+    } = props;
+    const classes = useStyles(props);
     const translate = useTranslate();
 
     const handleConfirm = useCallback(

@@ -1,4 +1,5 @@
-import React, { Children, cloneElement, FC, memo, ReactElement } from 'react';
+import * as React from 'react';
+import { Children, cloneElement, FC, memo, ReactElement } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import get from 'lodash/get';
@@ -15,7 +16,7 @@ import LinearProgress from '../layout/LinearProgress';
 import Link from '../Link';
 import sanitizeRestProps from './sanitizeRestProps';
 import { ClassNameMap } from '@material-ui/styles';
-import { FieldProps, InjectedFieldProps } from './types';
+import { FieldProps, fieldPropTypes, InjectedFieldProps } from './types';
 
 interface ReferenceFieldProps extends FieldProps, InjectedFieldProps {
     children: ReactElement;
@@ -118,8 +119,9 @@ ReferenceField.propTypes = {
     reference: PropTypes.string.isRequired,
     resource: PropTypes.string,
     sortBy: PropTypes.string,
+    sortByOrder: fieldPropTypes.sortByOrder,
     source: PropTypes.string.isRequired,
-    translateChoice: PropTypes.func,
+    translateChoice: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
     linkType: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.bool,
@@ -164,24 +166,25 @@ interface ReferenceFieldViewProps
     children?: ReactElement;
 }
 
-export const ReferenceFieldView: FC<ReferenceFieldViewProps> = ({
-    basePath,
-    children,
-    className,
-    classes: classesOverride,
-    error,
-    loaded,
-    loading,
-    record,
-    reference,
-    referenceRecord,
-    resource,
-    resourceLinkPath,
-    source,
-    translateChoice = false,
-    ...rest
-}) => {
-    const classes = useStyles({ classes: classesOverride });
+export const ReferenceFieldView: FC<ReferenceFieldViewProps> = props => {
+    const {
+        basePath,
+        children,
+        className,
+        classes: classesOverride,
+        error,
+        loaded,
+        loading,
+        record,
+        reference,
+        referenceRecord,
+        resource,
+        resourceLinkPath,
+        source,
+        translateChoice = false,
+        ...rest
+    } = props;
+    const classes = useStyles(props);
     if (!loaded) {
         return <LinearProgress />;
     }
@@ -191,6 +194,7 @@ export const ReferenceFieldView: FC<ReferenceFieldViewProps> = ({
                 aria-errormessage={error.message ? error.message : error}
                 color="error"
                 fontSize="small"
+                role="presentation"
             />
         );
     }
@@ -244,7 +248,7 @@ ReferenceFieldView.propTypes = {
         PropTypes.oneOf([false]),
     ]) as React.Validator<string | false>,
     source: PropTypes.string,
-    translateChoice: PropTypes.bool,
+    translateChoice: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
 };
 
 const PureReferenceFieldView = memo(ReferenceFieldView);

@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import * as React from 'react';
+import { FC } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link as RRLink, LinkProps as RRLinkProps } from 'react-router-dom';
@@ -22,14 +23,15 @@ export interface LinkProps extends RRLinkProps {
     className?: string;
 }
 
-const Link: FC<LinkProps> = ({
-    to,
-    children,
-    classes: classesOverride,
-    className,
-    ...rest
-}) => {
-    const classes = useStyles({ classes: classesOverride });
+const Link: FC<LinkProps> = props => {
+    const {
+        to,
+        children,
+        classes: classesOverride,
+        className,
+        ...rest
+    } = props;
+    const classes = useStyles(props);
     return (
         <RRLink
             to={to}

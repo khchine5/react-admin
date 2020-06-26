@@ -1,4 +1,5 @@
-import React, { Children, cloneElement, FC, memo, ReactElement } from 'react';
+import * as React from 'react';
+import { Children, cloneElement, FC, memo, ReactElement } from 'react';
 import PropTypes from 'prop-types';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
@@ -83,6 +84,7 @@ ReferenceArrayField.propTypes = {
     reference: PropTypes.string.isRequired,
     resource: PropTypes.string,
     sortBy: PropTypes.string,
+    sortByOrder: fieldPropTypes.sortByOrder,
     source: PropTypes.string.isRequired,
 };
 
@@ -105,17 +107,19 @@ interface ReferenceArrayFieldViewProps extends FieldProps, ReferenceArrayProps {
     reference: string;
 }
 
-export const ReferenceArrayFieldView: FC<ReferenceArrayFieldViewProps> = ({
-    children,
-    className,
-    classes: classesOverride,
-    data,
-    ids,
-    loaded,
-    reference,
-    referenceBasePath,
-}) => {
-    const classes = useStyles({ classes: classesOverride });
+export const ReferenceArrayFieldView: FC<
+    ReferenceArrayFieldViewProps
+> = props => {
+    const {
+        children,
+        className,
+        data,
+        ids,
+        loaded,
+        reference,
+        referenceBasePath,
+    } = props;
+    const classes = useStyles(props);
     if (!loaded) {
         return <LinearProgress className={classes.progress} />;
     }

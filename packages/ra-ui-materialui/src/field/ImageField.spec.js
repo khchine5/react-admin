@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import expect from 'expect';
 import { render, cleanup } from '@testing-library/react';
 import ImageField from './ImageField';
@@ -16,16 +16,15 @@ describe('<ImageField />', () => {
         expect(container.firstChild.textContent).toEqual('');
     });
 
-    it('should render the emptyText when record has no value', () => {
-        const { queryByText } = render(
-            <ImageField
-                record={{ url: null }}
-                emptyText="NA"
-                {...defaultProps}
-            />
-        );
-        expect(queryByText('NA')).not.toBeNull();
-    });
+    it.each([null, undefined])(
+        'should render the emptyText when value is %s',
+        url => {
+            const { queryByText } = render(
+                <ImageField record={{ url }} emptyText="NA" {...defaultProps} />
+            );
+            expect(queryByText('NA')).not.toBeNull();
+        }
+    );
 
     it('should render an image with correct attributes based on `source` and `title`', () => {
         const { getByRole } = render(
