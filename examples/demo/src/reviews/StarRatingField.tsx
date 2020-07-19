@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FC } from 'react';
 import Icon from '@material-ui/icons/Stars';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { FieldProps } from '../types';
 
@@ -9,6 +9,7 @@ const useStyles = makeStyles({
     root: {
         opacity: 0.87,
         whiteSpace: 'nowrap',
+        display: 'flex',
     },
     large: {
         width: 20,
@@ -30,7 +31,7 @@ const StarRatingField: FC<FieldProps & OwnProps> = ({
 }) => {
     const classes = useStyles();
     return record ? (
-        <span>
+        <span className={classes.root}>
             {Array(record.rating)
                 .fill(true)
                 .map((_, i) => (

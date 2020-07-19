@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Children, Fragment, cloneElement, memo } from 'react';
 import BookIcon from '@material-ui/icons/Book';
 import Chip from '@material-ui/core/Chip';
-import { useMediaQuery, makeStyles } from '@material-ui/core';
+import { useMediaQuery } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import lodashGet from 'lodash/get';
 import jsonExport from 'jsonexport/dist';
 import {
@@ -159,11 +160,12 @@ const PostList = props => {
                         reference="tags"
                         source="tags"
                         sortBy="tags.name"
+                        sort={{ field: 'name', order: 'ASC' }}
                         cellClassName={classes.hiddenOnSmallScreens}
                         headerClassName={classes.hiddenOnSmallScreens}
                     >
                         <SingleFieldList>
-                            <ChipField source="name" />
+                            <ChipField source="name" size="small" />
                         </SingleFieldList>
                     </ReferenceArrayField>
                     <PostListActionToolbar>

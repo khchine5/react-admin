@@ -2,7 +2,8 @@ import * as React from 'react';
 import { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
-import { makeStyles, InputAdornment } from '@material-ui/core';
+import { InputAdornment } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { TextFieldProps } from '@material-ui/core/TextField';
 import { useTranslate, InputProps } from 'ra-core';
 
@@ -23,6 +24,11 @@ const SearchInput: FunctionComponent<
     const { classes: classesOverride, ...rest } = props;
     const translate = useTranslate();
     const classes = useStyles(props);
+    if (props.label) {
+        throw new Error(
+            "<SearchInput> isn't designed to be used with a label prop. Use <TextInput> if you need a label."
+        );
+    }
 
     return (
         <TextInput
